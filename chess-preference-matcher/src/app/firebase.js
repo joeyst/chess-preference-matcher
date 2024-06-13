@@ -1,4 +1,4 @@
-import { getAuth } from "firebase/auth";
+import { getAuth, User } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 
@@ -11,7 +11,7 @@ import {
 import { getDoc, setDoc, doc } from "firebase/firestore"
 
 // TODO: Fix firebaseConfig here. On Vercel end. 
-const firebaseConfig = require('./firebase_config.json')
+const firebaseConfig = require('../firebase_config.json')
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
@@ -30,11 +30,13 @@ async function getDocData(collectionName, uid) {
 }
 
 function setDocData(collectionName, uid, data) {
-  setDoc(getDocRef(db, collectionName, uid), data)
+  if (uid && data) {
+    setDoc(getDocRef(db, collectionName, uid), data)
+  }
 }
 
 function onAuthStateChanged(...args) {
-  auth.onAuthStateChanged(...args)
+  return auth.onAuthStateChanged(...args)
 }
 
 module.exports = {
@@ -43,5 +45,6 @@ module.exports = {
   getDocRef,
   getDocData,
   setDocData,
-  onAuthStateChanged
+  onAuthStateChanged,
+  User
 }

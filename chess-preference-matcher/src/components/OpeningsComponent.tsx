@@ -1,11 +1,15 @@
 'use client'
 
-import { AppBar, Box, Toolbar, Container, Button, Avatar, Menu, MenuItem, Link } from "@mui/material";
-import { useState } from "react"
-const { UserSettingsContext } = require('../context/UserSettings')
+import { useContext } from "react"
+const { UserSettingsContext } = require('../context/UserSettingsContext')
+import MultipleSelectComponent from './MultipleSelectComponent'
 
-function OpeningsComponent() {
-  const { openings, setOpenings } = useContext(UserSettingsContext)
+export default function OpeningsComponent() {
+  const openingList = require('../data/openings.json')
+  const { userSettings, setUserSettings } = useContext(UserSettingsContext)
+  const saveToDb = (settings) => {
+    setUserSettings(Object.assign(userSettings, { 'openings': settings }))
+  }
 
-  return <NativeSelects />
+  return <MultipleSelectComponent optionList={openingList} selectList={userSettings?.openings} saveToDb={saveToDb} />
 }

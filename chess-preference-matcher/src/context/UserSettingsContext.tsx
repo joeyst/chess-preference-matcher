@@ -1,6 +1,6 @@
+'use client'
 import { createContext, useState, ReactNode, useEffect } from "react"
-import { getDocData, setDocData } from "../app/firebase"
-import { User } from "firebase/auth"
+import { getDocData, setDocData, onAuthStateChanged, User } from "../app/firebase"
 
 type UserSettings = {
   id: string;
@@ -23,7 +23,7 @@ function UserSettingsContextProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => onAuthStateChanged(setUser), [])
   useEffect(() => {if (user) setUserSettings(getDocData('users', user.uid))}, [user])
-  useEffect(() => {if (userSettings) setDocData('users', user.uid, userSettings)}, [userSettings])
+  useEffect(() => setDocData('users', user?.uid, userSettings), [userSettings])
 
   return (
     <UserSettingsContext.Provider value={{ user, userSettings, setUserSettings }}>
