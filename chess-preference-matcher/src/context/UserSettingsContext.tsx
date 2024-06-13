@@ -1,9 +1,6 @@
 import { createContext, useState, ReactNode, useEffect } from "react"
-import { auth } from "../app/firebase"
+import { getDocData, setDocData } from "../app/firebase"
 import { User } from "firebase/auth"
-
-import { db } from "../app/firebase"
-import { getDoc, setDoc, doc } from "firebase/firestore"
 
 type UserSettings = {
   id: string;
@@ -24,57 +21,15 @@ function UserSettingsContextProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null)
 
-  function saveUserSettings(settings: UserSettings) {
-    if (user != null) {
-      setUserSettings({
-        id: user.uid,
-        ...settings
-      })
-    }
-  }
-
-  useEffect(() => {
-    writeUserSettings(userSettings)
-  }, [userSettings])
-
-  useEffect(() => {
-    return auth.onAuthStateChanged(findUser)
-  }, [])
-
-  async function findUser(user: User | null) {
-    setUser(user)
-
-    if (user !== null) {
-      const settings = await findUserSettings(user.uid)
-      setUserSettings(settings)
-    } else {
-      setUserSettings(null)
-    }
-  }
+  useEffect(() => onAuthStateChanged(setUser), [])
+  useEffect(() => {if (user) setUserSettings(getDocData('users', user.uid))}, [user])
+  useEffect(() => {if (userSettings) setDocData('users', user.uid, userSettings)}, [userSettings])
 
   return (
-    <UserSettingsContext.Provider value={{ user, userSettings, saveUserSettings }}>
+    <UserSettingsContext.Provider value={{ user, userSettings, setUserSettings }}>
       {children}
     </UserSettingsContext.Provider>
   )
-}
-
-async function findUserSettings(uid: string) {
-  const docRef = doc(db, "users", uid)
-  const docSnap = await getDoc(docRef)
-  
-  if (docSnap.exists()) {
-    const data = docSnap.data()
-    return { id: docSnap.id, ...data }
-  } else {
-    return null
-  }
-}
-
-function writeUserSettings(userSettings: UserSettings | null | undefined) {
-  if (userSettings != null) {
-    setDoc(doc(db, "users", userSettings.id), userSettings)
-  }
 }
 
 module.exports = {

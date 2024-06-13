@@ -8,6 +8,8 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth"
 
+import { getDoc, setDoc, doc } from "firebase/firestore"
+
 // TODO: Fix firebaseConfig here. On Vercel end. 
 const firebaseConfig = {
   apiKey: "abcdefgh",
@@ -31,9 +33,29 @@ const logOut = () => {
   signOut(auth)
 }
 
+function getDocRef(collectionName, uid) {
+  return doc(db, collectionName, uid)
+}
+
+async function getDocData(collectionName, uid) {
+  return (await getDoc(getDocRef(collectionName, uid)))?.data()
+}
+
+function setDocData(collectionName, uid, data) {
+  setDoc(getDocRef(db, collectionName, uid), data)
+}
+
+function onAuthStateChanged(...args) {
+  auth.onAuthStateChanged(...args)
+}
+
 module.exports = {
   db,
   auth,
   googleSignIn,
-  logOut
+  logOut,
+  getDocRef,
+  getDocData,
+  setDocData,
+  onAuthStateChanged
 }
