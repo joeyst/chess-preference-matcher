@@ -24,13 +24,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
 const auth = getAuth();
 
-const googleSignIn = () => {
-  const provider = new GoogleAuthProvider()
-  signInWithPopup(auth, provider)
-}
-
-const logOut = () => {
-  signOut(auth)
+function signIn() {
+  signInWithPopup(auth, new GoogleAuthProvider())
 }
 
 function getDocRef(collectionName, uid) {
@@ -50,10 +45,8 @@ function onAuthStateChanged(...args) {
 }
 
 module.exports = {
-  db,
-  auth,
-  googleSignIn,
-  logOut,
+  signIn,
+  signOut,
   getDocRef,
   getDocData,
   setDocData,
