@@ -6,7 +6,6 @@ import {
   signOut,
   signInWithPopup,
   GoogleAuthProvider,
-  User,
 } from "firebase/auth"
 
 // TODO: Fix firebaseConfig here. On Vercel end. 
