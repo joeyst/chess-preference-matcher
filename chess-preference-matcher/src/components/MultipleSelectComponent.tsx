@@ -2,7 +2,7 @@
 // Adapted from: https://stackoverflow.com/questions/69384972/material-ui-select-multiple-selection-in-array 
 
 import { AppBar, Box, Toolbar, Container, Button, Avatar, Menu, MenuItem, Link } from "@mui/material";
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import { update, get } from "lodash"
 const { UserSettingsContext } = require('../context/UserSettingsContext')
 
@@ -25,40 +25,52 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function MultipleSelectComponent(props: { optionList: string[], settingsAttr: string }) {
+export default function MultipleSelectComponent(props: { options: string[], settingsAttr: string, dropDownTitle: string }) {
   const classes = useStyles()
-  const { userSettings, setUserSettings } = useContext(UserSettingsContext)
-  const { optionList, settingsAttr } = props
-  const selectedList = get(userSettings, settingsAttr)
+  const { options, settingsAttr, dropDownTitle } = props 
 
-  const setUserSettingsAttr = (newSelectedList) => {
-    setUserSettings(update(userSettings, props.settingsAttr, newSelectedList))
+  const { user, settings, setSettingsByAttribute, saveSettingsToDb } = useContext(UserSettingsContext)
+  const [selected, setSelected] = useState([])
+
+  useEffect(() => setSelected(get(settings, settingsAttr)), [settings])
+
+  function handleClose(_) {
+    console.log(`handleClose. selected: ${selected}`)
+    setSettingsByAttribute(settingsAttr, [...selected])
+    if (user) {
+      saveSettingsToDb()
+    }
   }
 
-  return (
-    <div>
-      <FormControl className={classes.formControl}>
-        <InputLabel htmlFor="age-native-simple">
-          Openings 
-        </InputLabel>
-        <Select
-          labelId="demo-mutiple-checkbox-label"
-          id="demo-mutiple-checkbox"
-          multiple
-          value={optionList}
-          name="first"
-          onChange={event => setUserSettingsAttr(event.target.value)}
-          input={<OutlinedInput label="Tag" />}
-          renderValue={(selectedList) => selectedList.join(", ")}
-        >
-          {props.optionList?.map((name) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={selectedList?.includes(name)} />
-              <ListItemText primary={name} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
-  );
+  if (!Array.isArray(selected)) {
+    return <div></div>
+  } else {
+    return (
+      <div>
+        <FormControl className={classes.formControl}>
+          <InputLabel htmlFor="age-native-simple">
+             {dropDownTitle}
+          </InputLabel>
+          <Select
+            labelId="demo-mutiple-checkbox-label"
+            id="demo-mutiple-checkbox"
+            multiple
+            value={selected}
+            name="first"
+            onChange={event => setSelected(event.target.value)}
+            onClose={handleClose}
+            input={<OutlinedInput label="Tag" />}
+            renderValue={selected => selected.join(", ")}
+          >
+            {options.map((name) => (
+              <MenuItem key={name} value={name}>
+                <Checkbox checked={selected.includes(name)} />
+                <ListItemText primary={name} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+    );
+  }
 }

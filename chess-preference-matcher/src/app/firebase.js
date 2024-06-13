@@ -2,12 +2,6 @@ import { getAuth, User } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 
-import {
-  signOut,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth"
-
 import { getDoc, setDoc, doc } from "firebase/firestore"
 
 // TODO: Fix firebaseConfig here. On Vercel end. 
@@ -17,29 +11,32 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
 const auth = getAuth();
 
+const { signOut, signInWithPopup, GoogleAuthProvider } = require('firebase/auth')
+
 function signIn() {
   signInWithPopup(auth, new GoogleAuthProvider())
 }
 
 function getDocRef(collectionName, uid) {
-  if (uid) {
-    console.log(`uid: ${uid} | type(uid): ${typeof uid}`)
-    return doc(db, collectionName, uid)
-  }
+  console.log(`getDocRef(${collectionName}, ${uid})`)
+  return doc(db, collectionName, uid)
 }
 
 async function getDocData(collectionName, uid) {
-  if (uid) {
-    console.log(JSON.stringify({uid}))
-    return (await getDoc(getDocRef(collectionName, uid)))?.data()
+  console.log(`getDocData(${collectionName}, ${uid})`)
+  const docRef = doc(db, collectionName, uid)
+  const docSnap = await getDoc(docRef)
+
+  if (docSnap.exists()) {
+    return docSnap.data()
+  } else {
+    return null 
   }
 }
 
-function setDocData(collectionName, uid, data) {
-  if (uid && data) {
-    console.log(JSON.stringify({collectionName, uid, data}))
-    setDoc(doc(db, collectionName, uid), data)
-  }
+async function setDocData(collectionName, uid, data) {
+  console.log(`setDocData(${collectionName}, ${uid})`)
+  await setDoc(doc(db, collectionName, uid), data)
 }
 
 function onAuthStateChanged(...args) {
@@ -48,7 +45,7 @@ function onAuthStateChanged(...args) {
 
 module.exports = {
   signIn,
-  signOut,
+  signOut: () => signOut(auth),
   getDocData,
   setDocData,
   onAuthStateChanged,

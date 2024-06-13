@@ -2,7 +2,7 @@
 
 import { AppBar, Box, Toolbar, Container, Button, Avatar, Menu, MenuItem, Link } from "@mui/material"
 import { UserSettingsContext } from "../context/UserSettingsContext"
-import { signIn, signOut } from "../app/firebase"
+const { signIn, signOut } = require("../app/firebase")
 import { useState, useContext } from "react" 
 
 function LoginButton() {
