@@ -1,10 +1,9 @@
 'use client'
 // Adapted from: https://stackoverflow.com/questions/69384972/material-ui-select-multiple-selection-in-array 
 
-'use client'
-
 import { AppBar, Box, Toolbar, Container, Button, Avatar, Menu, MenuItem, Link } from "@mui/material";
-import { useState } from "react"
+import { useState, useContext } from "react"
+import { update, get } from "lodash"
 const { UserSettingsContext } = require('../context/UserSettingsContext')
 
 import React from "react";
@@ -26,9 +25,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function MultipleSelectComponent(props: { optionList: string[], saveToDb: Function }) {
-  const classes = useStyles();
-  const [selectedOptionList, setSelectedOptionList] = useState([]);
+export default function MultipleSelectComponent(props: { optionList: string[], settingsAttr: string }) {
+  const classes = useStyles()
+  const { userSettings, setUserSettings } = useContext(UserSettingsContext)
+  const { optionList, settingsAttr } = props
+  const selectedList = get(userSettings, settingsAttr)
+
+  const setUserSettingsAttr = (newSelectedList) => {
+    setUserSettings(update(userSettings, props.settingsAttr, newSelectedList))
+  }
 
   return (
     <div>
@@ -40,16 +45,15 @@ export default function MultipleSelectComponent(props: { optionList: string[], s
           labelId="demo-mutiple-checkbox-label"
           id="demo-mutiple-checkbox"
           multiple
-          value={selectedOptionList}
+          value={optionList}
           name="first"
-          onChange={event => setSelectedOptionList(event.target.value)}
-          onClose={_ => saveToDb(selectedOptionList)}
+          onChange={event => setUserSettingsAttr(event.target.value)}
           input={<OutlinedInput label="Tag" />}
-          renderValue={(selected) => selected.join(", ")}
+          renderValue={(selectedList) => selectedList.join(", ")}
         >
-          {props.optionList.map((name) => (
+          {props.optionList?.map((name) => (
             <MenuItem key={name} value={name}>
-              <Checkbox checked={selectedOptionList.includes(name)} />
+              <Checkbox checked={selectedList?.includes(name)} />
               <ListItemText primary={name} />
             </MenuItem>
           ))}

@@ -3,7 +3,6 @@ import { createContext, useState, ReactNode, useEffect } from "react"
 import { getDocData, setDocData, onAuthStateChanged, User } from "../app/firebase"
 
 type UserSettings = {
-  id: string;
   openings: string[];
   timeControls: string[];
   variants: string[];
@@ -22,7 +21,7 @@ function UserSettingsContextProvider({ children }: { children: ReactNode }) {
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null)
 
   useEffect(() => onAuthStateChanged(setUser), [])
-  useEffect(() => {if (user) setUserSettings(getDocData('users', user.uid))}, [user])
+  useEffect(async () => {if (user) setUserSettings(await getDocData('users', user.uid))}, [user])
   useEffect(() => setDocData('users', user?.uid, userSettings), [userSettings])
 
   return (
