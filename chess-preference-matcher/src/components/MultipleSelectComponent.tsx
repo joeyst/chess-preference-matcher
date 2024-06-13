@@ -30,15 +30,6 @@ export default function MultipleSelectComponent(props: { optionList: string[], s
   const classes = useStyles();
   const [selectedOptionList, setSelectedOptionList] = useState([]);
 
-  const handleChange = (event) => {
-    setSelectedOptionList(event.target.value);
-  };
-
-  const handleClose = () => {
-    console.log("Drop-down menu closed");
-    // Add your desired callback logic here
-  };
-
   return (
     <div>
       <FormControl className={classes.formControl}>
@@ -51,8 +42,8 @@ export default function MultipleSelectComponent(props: { optionList: string[], s
           multiple
           value={selectedOptionList}
           name="first"
-          onChange={handleChange}
-          onClose={handleClose}
+          onChange={event => setSelectedOptionList(event.target.value)}
+          onClose={_ => saveToDb(selectedOptionList)}
           input={<OutlinedInput label="Tag" />}
           renderValue={(selected) => selected.join(", ")}
         >
