@@ -13,9 +13,16 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.description}>
           <NavBarComponent />
+          <div style={{ // Styling source: https://usamabhatti.hashnode.dev/react-center-a-component-horizontally-and-vertically 
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)'
+          }}>
           <OpeningsComponent />
           <TimeControlsComponent />
           <VariantsComponent />
+          </div>
         </div>
       </main>
     </UserSettingsContextProvider>
