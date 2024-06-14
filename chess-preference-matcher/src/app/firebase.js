@@ -1,8 +1,7 @@
 import { getAuth, User } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 
-import { getDoc, setDoc, doc } from "firebase/firestore"
+import { getFirestore, getDoc, setDoc, doc, collection } from "firebase/firestore"
 
 // TODO: Fix firebaseConfig here. On Vercel end. 
 const firebaseConfig = require('../firebase_config.json')
@@ -10,6 +9,7 @@ const firebaseConfig = require('../firebase_config.json')
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
 const auth = getAuth();
+const userCollection = collection(db, 'users')
 
 const { signOut, signInWithPopup, GoogleAuthProvider } = require('firebase/auth')
 
@@ -49,5 +49,6 @@ module.exports = {
   getDocData,
   setDocData,
   onAuthStateChanged,
+  userCollection,
   User
 }

@@ -6,22 +6,42 @@ import TimeControlsComponent from "../components/TimeControlsComponent"
 import VariantsComponent from "../components/VariantsComponent"
 import NavBarComponent from "../components/NavBarComponent"
 import { UserSettingsContextProvider } from "../context/UserSettingsContext"
+import MatchFinderComponent from "../components/MatchesComponent"
+import populateFirebase from "./populateFirebase"
+import MatchTableComponent from "../components/MatchTableComponent"
+import { Box } from '@mui/material'
+
+populateFirebase()
 
 export default function Home() {
   return (
     <UserSettingsContextProvider>    
       <main className={styles.main}>
         <div className={styles.description}>
-          <NavBarComponent />
-          <div style={{ // Styling source: https://usamabhatti.hashnode.dev/react-center-a-component-horizontally-and-vertically 
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)'
-          }}>
-          <OpeningsComponent />
-          <TimeControlsComponent />
-          <VariantsComponent />
+          <div 
+            style={{
+              display: 'flex',
+              flexDirection: 'row'
+            }}
+          >
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 4, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 3 }}>
+            <NavBarComponent />
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 4, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 3 }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <OpeningsComponent />
+            <TimeControlsComponent />
+            <VariantsComponent />
+          </div>
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 4, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 3 }}>
+            <MatchTableComponent />
+          </Box>
           </div>
         </div>
       </main>

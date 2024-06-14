@@ -1,0 +1,12 @@
+[
+  {
+    "openings": ["Sicilian", "Bong Cloud"],
+    "variants": ["Standard", "Crazyhouse"],
+    "timeControls": ["10 + 0", "5 + 5"]
+  },
+  {
+    "openings": ["Sicilian", "Queen's Pawn"],
+    "variants": ["Standard", "Chess960"],
+    "timeControls": ["10 + 5", "5 + 5"]
+  }
+]
