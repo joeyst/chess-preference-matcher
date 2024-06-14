@@ -4,7 +4,15 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, getDoc, setDoc, doc, collection } from "firebase/firestore"
 
 // TODO: Fix firebaseConfig here. On Vercel end. 
-const firebaseConfig = require('../firebase_config.json')
+//const firebaseConfig = require('../firebase_config.json')
+const firebaseConfig = {
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
+  projectId: process.env.projectId,
+  storageBucket: process.env.storageBucket,
+  messagingSenderId: process.env.messagingSenderId,
+  appId: process.env.appId,
+}
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
